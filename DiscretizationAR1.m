@@ -32,18 +32,6 @@ Bkub(1) = -Inf;
 Bkub(end)=Inf;
 xj    = (Bk(2:N+1)+Bk(1:N))/2;
 
-% % trace a little plot to show that everything is nice and cool
-% hold on
-% plot([Bk(1)-1,Bk(end)+1],[0,0],'-k')
-% for j=1:N+1
-%     plot([Bk(j);Bk(j)],[-0.5;0.5],'-r')
-% end
-% for j=1:N
-%     plot(xj(j),0,'ok')
-% end
-% axis([Bk(1)-1,Bk(end)+1,-1,1])
-% hold off
-
 %% Matrix of transition probabilities and steady state distribution.
 
 P=zeros(N,N); % matrix of transition probabilities
@@ -61,12 +49,12 @@ s= AM\bv; % same as inv(AM)*bv
 
 
 % and verify again
-figure()
-hold on;
-plot(xj,s,'ok');
-I=normpdf(xj,b/(1-a),stdy);
-plot(xj,I/sum(I),'+m');
-hold off;
+% figure()
+% hold on;
+% plot(xj,s,'ok');
+% I=normpdf(xj,b/(1-a),stdy);
+% plot(xj,I/sum(I),'+m');
+% hold off;
 
 %% Value function iteration.
 
@@ -93,6 +81,7 @@ B = repmat(beta*exp(xj*(1-gamma)),[N 1]).*P*ones(N,1);
 f = linsolve(A,B);
 
 % Plot.
+figure(1);
 hold on;
 plot(xj,H,'r'); plot(xj,f,'g');
 legend('value function iteration','linear system');
@@ -118,11 +107,13 @@ rand('twister',sum(100*clock));
 
 NSim  = 10000;
 xtsim = zeros(NSim,1);
+Rsim = ones(NSim,1);
 stsim = zeros(NSim,1); % keeps track of state in which one is
 Pc    = cumsum(P,2); % sums the various columns of trans prob
 idx   = round(N/2); % current state, just any state
 for SimCtr=1:NSim
     u=rand(1,1);
+    Rsim(SimCtr,1) = Rsim(SimCtr,1)/f(idx);
     for j=1:N % find the position of the next state
         if Pc(idx,j)>u
             idx=j;
@@ -131,13 +122,17 @@ for SimCtr=1:NSim
     end
     stsim(SimCtr,1) = idx;
     xtsim(SimCtr,1) = xj(idx);
+    Rsim(SimCtr,1) = Rsim(SimCtr,1)*(1+f(idx))*exp(xj(idx));
 end
 
-plot(xtsim)
-m=mean(xtsim);
-s=std(xtsim);
+figure(2);
+hold on;
+plot(xtsim); xlabel('t'); ylabel('c_t');
+title('Simulation of consumption rate');
+hold off;
 
-fprintf('Mean, theoretical and empirical %12.6f %12.6f\n',b/(1-a),m)
-fprintf('Std , theoretical and empirical %12.6f %12.6f\n',stdy,s)
-
-
+figure(3);
+hold on;
+plot(xtsim); xlabel('t'); ylabel('R_t');
+title('Simulation of stock return');
+hold off;

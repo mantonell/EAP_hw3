@@ -3,4 +3,5 @@
 *.log
 *.synctex.gz
 *.pdf
+*.m~
 /PbSet2Zip
