@@ -125,14 +125,17 @@ for SimCtr=1:NSim
     Rsim(SimCtr,1) = Rsim(SimCtr,1)*(1+f(idx))*exp(xj(idx));
 end
 
-figure(2);
-hold on;
-plot(xtsim); xlabel('t'); ylabel('c_t');
-title('Simulation of consumption rate');
-hold off;
+corr(Rsim(2:end,1),xtsim(1:end-1,:));
 
-figure(3);
-hold on;
-plot(xtsim); xlabel('t'); ylabel('R_t');
-title('Simulation of stock return');
-hold off;
+figure(2);
+subplot(1,2,1);
+plot(xtsim);
+xlabel('t'); ylabel('c_t');
+subplot(1,2,2);
+plot(Rsim);
+xlabel('t'); ylabel('R_t');
+
+%% Regression (Question 7).
+results = ols(Rsim(2:end,:),[ones(NSim-1,1) f(stsim(1:end-1,:))]);
+results.beta
+results.tstat
