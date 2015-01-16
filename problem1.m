@@ -1,4 +1,6 @@
 %% Numerical solution to Problem 1
+clear; clc;
+
 beta = 0.89;
 mu_C = 0.0189;
 mu_D = 0.0189;
@@ -17,6 +19,12 @@ H = A/(1-A);
 
 %% Question 2:
 % Expected value of the risky return.
-m = (H+1)/H*exp(mu_D+.5*sigma_D^2);
+ER = (H+1)/H*exp(mu_D+.5*sigma_D^2);
 % Standard error of the risky return.
-sigma = (H+1)/H*exp(mu_D+.5*sigma_D^2)*sqrt(exp(sigma_D^2)-1);
+sigmaR = (H+1)/H*exp(mu_D+.5*sigma_D^2)*sqrt(exp(sigma_D^2)-1);
+
+%% Question 3:
+% Risk-free rate.
+Rf = exp(gamma*mu_C-.5*(gamma*sigma_C)^2)/beta;
+% Risk premium.
+risk_premium = ER-Rf;
