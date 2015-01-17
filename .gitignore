@@ -4,5 +4,12 @@
 *.synctex.gz
 *.pdf
 *.m~
-/PbSet2Zip
 /jplv7
+Canon7_Gautschi.m
+coefffreud4.txt
+gauss.m
+GaussHermite.m
+GetEQParam.m
+niceprint.m
+SKKUBench.txt
+TestTauchenHussey.m
