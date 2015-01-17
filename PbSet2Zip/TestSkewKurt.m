@@ -75,7 +75,7 @@ TrPr = II./repmat(IIs,1,Nj); % transition probability
 TrPrs=cumsum(TrPr,2);
 xj=uj/(-L4C)^.25;
 
-NSim=1000;
+NSim=10000;
 xt=zeros(NSim,1); % corresponds to the variable from which one simulates
 idx=zeros(NSim,1); % corresponds to the index of the state 
 idx(1)=floor(Nj/2); % starts in the middle of nowhere
@@ -100,16 +100,17 @@ T=NSim;
 y=xt(2:T);
 xx=[ones(T-1,1) xt(1:T-1)];
 res = ols(y,xx);
-disp('regression xt on xt(-1)')
-prt(res)
-
-%% Steady-state price-dividend process.
 
 % Consumption growth rate.
 m=a/(1-B); 
 cj=m+sig*xj;
+ct=cj(idx);
+y=ct(2:T);
+cc=[ones(T-1,1) ct(1:T-1)];
+res_c=ols(y,cc);
 
-% Finds P/D process.
+%% Steady-state price-dividend process.
+
 psi=zeros(Nj,Nj);
 for j=1:Nj
     for k=1:Nj
@@ -123,14 +124,15 @@ H=(eye(Nj)-psi.*TrPr)\b;
 R=(H(idx(2:end))+1)./H(idx(1:end-1)).*exp(cj(idx(2:end)));
 
 % Summary statistics
-mean(R)
-std(R)
-min(R)
-max(R)
-skewness(R)
-kurtosis(R)
+sumstat.mean=mean(R);
+sumstat.std=std(R);
+sumstat.min=min(R);
+sumstat.max=max(R);
+sumstat.skew=skewness(R);
+sumstat.kurt=kurtosis(R);
 
 % Equity premium
 Rf=1/(beta*mean(exp(-gamma*cj(idx))));
 equity_premium=mean(R)-Rf;
+save PB3;
 end
