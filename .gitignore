@@ -6,6 +6,7 @@
 *.pdf
 *.m~
 /jplv7
+/latex_file
 Canon7_Gautschi.m
 coefffreud4.txt
 gauss.m
